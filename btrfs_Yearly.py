@@ -29,20 +29,20 @@ for SUBVOLUME in SUBVOLUMES:
   
 
   SUBVOLUME_SNAPSHOTS = os.listdir(SUBVOLUME_SNAPSHOTS_DIR)
-  SUBVOLUME_DAILY = todaydate.strftime(date_format) + "_" + SUBVOLUME_NAME[-1] + "_Daily"
-  SUBVOLUME_DAILY_SNAPSHOT = SUBVOLUME_SNAPSHOTS_DIR + "/" + SUBVOLUME_DAILY
-  i = "sudo btrfs subvolume snapshot -r " + SUBVOLUME + " " + SUBVOLUME_DAILY_SNAPSHOT
+  SUBVOLUME_YEARLY = todaydate.strftime(date_format) + "_" + SUBVOLUME_NAME[-1] + "_Yearly"
+  SUBVOLUME_YEARLY_SNAPSHOT = SUBVOLUME_SNAPSHOTS_DIR + "/" + SUBVOLUME_YEARLY
+  i = "sudo btrfs subvolume snapshot -r " + SUBVOLUME + " " + SUBVOLUME_YEARLY_SNAPSHOT
   ## if there is currently no Weekly snapshots create one
-  if SUBVOLUME_DAILY not in SUBVOLUME_SNAPSHOTS:
+  if SUBVOLUME_YEARLY not in SUBVOLUME_SNAPSHOTS:
     os.system(i)
   else:
       for SNAPSHOTS in SUBVOLUME_SNAPSHOTS:
         SNAPSHOTS_DATE = SNAPSHOTS.split("_")
         ## print type of snapshots
-        if SNAPSHOTS_DATE[2] == "Daily":
+        if SNAPSHOTS_DATE[2] == "Yearly":
             ## Check if todays snapshot is taken
-            if SUBVOLUME_DAILY in SNAPSHOTS:
-                print("This Day exists")
+            if SUBVOLUME_YEARLY in SNAPSHOTS:
+                print("This Year exists")
             ## if not then create one
             else:
                 os.system(i)
@@ -50,6 +50,6 @@ for SUBVOLUME in SUBVOLUMES:
             ## Compare date of Snapshot with current date to find how many months has passed
             diff = relativedelta.relativedelta(todaydate, datetime.date(int(DATE[0]), int(DATE[1]), int(DATE[2])))
             ## Deletes snapshot if older that age variable
-            if diff.days > age:
+            if diff.years > age:
                a = "sudo btrfs subvolume delete " + SNAPSHOTS
                os.system(a)

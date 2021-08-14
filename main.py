@@ -5,6 +5,7 @@ import yaml
 from icecream import ic
 from yaml.loader import SafeLoader
 from dateutil import relativedelta
+import sys
 
 SUBVOLUME = ""
 SUBVOLUMES = []
@@ -118,7 +119,7 @@ def Snapshot_Weekly(Name, Age):
         for SNAPSHOTS_WEEKLY_DATE in SNAPSHOTS_WEEKLY_DATES:
             SNAPSHOTS_DATE_SPLIT = SNAPSHOTS_WEEKLY_DATE.split("-")
             diff = relativedelta.relativedelta(todaydate, datetime.date(int(SNAPSHOTS_DATE_SPLIT[0]), int(SNAPSHOTS_DATE_SPLIT[1]), int(SNAPSHOTS_DATE_SPLIT[2])))
-            SNAPSHOTS_DIFF.append(diff.days)
+            SNAPSHOTS_DIFF.append(diff.weeks)
             ic(SNAPSHOTS_WEEKLY_DATE)
             ic(Name)
             if diff.weeks > Age:
@@ -133,7 +134,7 @@ def Snapshot_Weekly(Name, Age):
             os.system(SUBVOLUME_CREATE)
 
 def main():
-    with open("config.yml", 'r') as file:
+    with open(sys.argv[1], 'r') as file:
         config = yaml.load(file, Loader=SafeLoader)
     
     ## Add Subvolume dir to Name variable

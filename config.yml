@@ -1,0 +1,8 @@
+---
+Name:
+  /Container/Gitea:
+    Daily: 30
+    Hourly: 10
+  /Container/Nextcloud:
+    Daily: 30
+    Weekly: 10

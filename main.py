@@ -4,11 +4,14 @@ import yaml
 from icecream import ic
 from yaml.loader import SafeLoader
 import sys
-import Daily
+import Daily 
 import Weekly
 
 SUBVOLUME = ""
 SUBVOLUMES = []
+
+CONFIG_LOC = ""
+CONFIG_NUM = ""
 
 SUBVOLUME_SNAPSHOTS_DIR =""
 Name = ""
@@ -26,9 +29,14 @@ def snapshot_dir(Name):
 
 
 def main():
-    with open(sys.argv[1], 'r') as file:
+    if "--config" in sys.argv:
+        CONFIG_NUM = sys.argv.count("--config") + 1
+        CONFIG_LOC = sys.argv[CONFIG_NUM]
+    else:
+        CONFIG_LOC = "./config.yml"
+    with open(CONFIG_LOC, 'r') as file:
         config = yaml.load(file, Loader=SafeLoader)
-    
+
     ## Add Subvolume dir to Name variable
         for i in config["Name"]:
             ic(i)
@@ -53,10 +61,7 @@ def main():
                 # as snapshot will be created and then deleted imediatly
                 if config["Name"][SUBVOLUME]["Weekly"] > 0:
                     Weekly.Snapshot_Weekly(SUBVOLUME, config["Name"][SUBVOLUME]["Weekly"])
-
-
-            
-
         
-if __name__ == "__main__":            
+if __name__ == "__main__":
+
     main()

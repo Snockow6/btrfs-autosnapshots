@@ -3,6 +3,3 @@ Name:
   /Container/Gitea:
     Daily: 30
     Weekly: 1
-  /Container/Nextcloud:
-    Daily: 30
-    Weekly: 10

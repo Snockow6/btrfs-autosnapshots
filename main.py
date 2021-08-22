@@ -6,6 +6,7 @@ from yaml.loader import SafeLoader
 import sys
 import Daily 
 import Weekly
+import argparse
 
 SUBVOLUME = ""
 SUBVOLUMES = []
@@ -29,12 +30,12 @@ def snapshot_dir(Name):
 
 
 def main():
-    if "--config" in sys.argv:
-        CONFIG_NUM = sys.argv.count("--config") + 1
-        CONFIG_LOC = sys.argv[CONFIG_NUM]
-    else:
-        CONFIG_LOC = "./config.yml"
-    with open(CONFIG_LOC, 'r') as file:
+    parser = argparse.ArgumentParser(description="Auto Snapshot btrfs subvolumes from policys")
+    parser.add_argument('--config', '-c', type=str, default="./config.yml", help="sets full path for config")
+    args = parser.parse_args()
+    print(args.config)
+
+    with open(args.config, 'r') as file:
         config = yaml.load(file, Loader=SafeLoader)
 
     ## Add Subvolume dir to Name variable
@@ -63,5 +64,5 @@ def main():
                     Weekly.Snapshot_Weekly(SUBVOLUME, config["Name"][SUBVOLUME]["Weekly"])
         
 if __name__ == "__main__":
-
+    
     main()

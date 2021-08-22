@@ -30,38 +30,47 @@ def snapshot_dir(Name):
 
 
 def main():
+    ## Arguments to use in script
     parser = argparse.ArgumentParser(description="Auto Snapshot btrfs subvolumes from policys")
     parser.add_argument('--config', '-c', type=str, default="./config.yml", help="sets full path for config")
     args = parser.parse_args()
     print(args.config)
 
-    with open(args.config, 'r') as file:
-        config = yaml.load(file, Loader=SafeLoader)
+    ## Check the config file exists
+    try:
+        file = open(args.config, 'r')
+    except FileNotFoundError as err:
+        print(f"Error: {err}")
+    else:
 
-    ## Add Subvolume dir to Name variable
-        for i in config["Name"]:
-            ic(i)
-            SUBVOLUMES.append(i)
+        ## Read file into yaml
+        with file:
+            config = yaml.load(file, Loader=SafeLoader)
 
-        for SUBVOLUME in SUBVOLUMES:
-            ic(SUBVOLUME)
-            ## Make sure Subvolume Snapshot directory exists for SUBVOLUME
-            snapshot_dir(SUBVOLUME)
+            ## Add Subvolume dir to Name variable
+            for i in config["Name"]:
+                ic(i)
+                SUBVOLUMES.append(i)
 
-            ## Daily Snapshots
-            ic(config["Name"][SUBVOLUME])
-            if "Daily" in config["Name"][SUBVOLUME]:
-                ## Make sure Daily Snapshot is greater than 0
-                # as snapshot will be created and then deleted imediatly
-                if config["Name"][SUBVOLUME]["Daily"] > 0:
-                    Daily.Snapshot_Daily(SUBVOLUME, config["Name"][SUBVOLUME]["Daily"])
+            for SUBVOLUME in SUBVOLUMES:
+                ic(SUBVOLUME)
+                ## Make sure Subvolume Snapshot directory exists for SUBVOLUME
+                snapshot_dir(SUBVOLUME)
 
-            ## Weekly Snapshots
-            if "Weekly" in config["Name"][SUBVOLUME]:
-                ## Make sure Weekly Snapshot is greater than 0
-                # as snapshot will be created and then deleted imediatly
-                if config["Name"][SUBVOLUME]["Weekly"] > 0:
-                    Weekly.Snapshot_Weekly(SUBVOLUME, config["Name"][SUBVOLUME]["Weekly"])
+                ## Daily Snapshots
+                ic(config["Name"][SUBVOLUME])
+                if "Daily" in config["Name"][SUBVOLUME]:
+                    ## Make sure Daily Snapshot is greater than 0
+                    # as snapshot will be created and then deleted imediatly
+                    if config["Name"][SUBVOLUME]["Daily"] > 0:
+                        Daily.Snapshot_Daily(SUBVOLUME, config["Name"][SUBVOLUME]["Daily"])
+
+                ## Weekly Snapshots
+                if "Weekly" in config["Name"][SUBVOLUME]:
+                    ## Make sure Weekly Snapshot is greater than 0
+                    # as snapshot will be created and then deleted imediatly
+                    if config["Name"][SUBVOLUME]["Weekly"] > 0:
+                        Weekly.Snapshot_Weekly(SUBVOLUME, config["Name"][SUBVOLUME]["Weekly"])
         
 if __name__ == "__main__":
     
